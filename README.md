@@ -73,7 +73,8 @@ MONGO_CONTAINER=$(docker run -p 27017 -t quarry/mongo)
 # now get the port it is listening
 MONGO_PORT=$(docker port $MONGO_CONTAINER 27017)
 
-
+# now lets tell yoda about the server
+yoda add /mongo/$MONGO_CONTAINER $MONGO_IP:$MONGO_PORT
 ```
 
 
@@ -88,3 +89,9 @@ In the first shell:
 And then in the second shell:
 
 	$ ./examples/addserver.sh
+
+You should see servers arriving in the first shell.
+
+## licence
+
+MIT
