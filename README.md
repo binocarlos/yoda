@@ -5,19 +5,19 @@ etcd client for monitoring changes to the force
 
 ## installation
 
-You need to have an [etcd](https://github.com/coreos/etcd) server running in order for yoda to speak to the force.
+You need an [etcd](https://github.com/coreos/etcd) server running in order for yoda to speak to the force.
 
-If you have [docker](https://github.com/dotcloud/docker/) installed you can use the Dockerfile to run a etcd server.
+If you have [docker](https://github.com/dotcloud/docker/) installed you can use the Dockerfile to run one.
 
 ### node.js
 
-The node.js part is so you app can listen to changes in the network.
+The node.js part is so your app can listen to changes in the network and connect/disconnect to endpoints as they come and go.
 
 	$ npm install yoda --save
 
 ### bash
 
-The bash part is so your orchestration script can write changes to the network.
+The bash part is so your orchestration script can write changes to the network as you are spawning/killing processes.
 
 	$ wget -qO- https://raw.github.com/binocarlos/yoda/master/bootstrap.sh | sudo bash
 
@@ -25,12 +25,12 @@ The bash part is so your orchestration script can write changes to the network.
 
 Yoda gives you 2 things:
 
- * a node.js event listener that tells reacts to network endpoints coming and going
- * a bash script that endpoints call to register and un-register
+ * a node.js event listener that reacts to changes in network topology (endpoints coming and going)
+ * a bash script that an orchestration script calls to register and un-register endpoints
 
 ### node.js client
 
-Somewhere on a small lonely planet - we have a tiny node script that want to humbly connect to some Mongo databases.
+Somewhere on a small lonely planet - a plucky little node script wants to connect to some Mongo databases (or ZeroMQ sockets or any TCP thing).
 
 We know we have an etcd server running on 127.0.0.1:4001 and so we tell Yoda to connect to it to get updates about Mongos.
 
