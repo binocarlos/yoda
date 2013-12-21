@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 export YODA_HOST=${YODA_HOST:="127.0.0.1"}
-export YODA_PORT=${QUARRY_HOME:=4001}
+export YODA_PORT=${YODA_PORT:=4001}
 case "$1" in
   get)
     YODA_PATH="$2";
