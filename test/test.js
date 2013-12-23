@@ -45,6 +45,11 @@ describe('yoda', function(){
 		location.on('add', function(route, data){
 			hits.add++;
 			values[route] = data;
+			var match = route.match(/\/my\/location/);
+
+			if(match){
+				throw new Error('paths not removed');
+			}
 		})
 
 		location.on('change', function(route, data){			
@@ -120,32 +125,6 @@ describe('yoda', function(){
   })
 	
 
-	it('should handle the location path in adds', function(done) {
-
-		// connect to the etcd server
-		var yoda1 = new Yoda();
-		var location1 = yoda1.connect('/my/location');
-
-		var yoda2 = new Yoda();
-		var location2 = yoda2.connect('/my/location');
-
-		location1.on('add', function(route, data){
-			
-			route.should.equal('/123');
-			data.should.equal('456');
-
-			done();
-		})
-
-		setTimeout(function(){
-			location2.add('/123', '456');	
-		}, 10)
-		
-
-
-  })
-/*
-
 	it('should load values initially', function(done) {
 
 		this.timeout(5000);
@@ -160,7 +139,7 @@ describe('yoda', function(){
 			},
 			
 			function(next){
-				client.set("/my/location/a", "hello world", function(error, val){
+				client.set("/my/location/a", "hello world a", function(error, val){
 					next();
 				})
 
@@ -168,13 +147,13 @@ describe('yoda', function(){
 
 			function(next){
 
-				client.set("/my/location/b", "hello world", function(error, val){
+				client.set("/my/location/b", "hello world b", function(error, val){
 					next();
 				})
 			},
 
 			function(next){
-				client.set("/my/location/b/sub", "hello world", function(error, val){
+				client.set("/my/location/c/sub", "hello world c", function(error, val){
 					next();
 				})
 			}
@@ -183,13 +162,21 @@ describe('yoda', function(){
 			var yoda = new Yoda();
 			var location = yoda.connect('/my/location');
 			
+			var values = {}
 
+			location.on('add', function(route, data){
+				values[route] = data;
+			})
 
-
-
+			setTimeout(function(){
+				values["/a"].should.equal('hello world a');
+				values["/b"].should.equal('hello world b');
+				values["/c/sub"].should.equal('hello world c');
+				done()
+			}, 100)
 
 		})
 
   })
-*/
+
 })
