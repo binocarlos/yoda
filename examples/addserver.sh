@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 yoda set "/mongo/123" '{"host":"123.123.133.125", "port":"123"}'
 echo
 yoda get "/mongo/123"

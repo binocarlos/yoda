@@ -48,27 +48,41 @@ Location.prototype.add = function(id, data, done){
 }
 
 Location.prototype.process = function(packet){
+	var action = (packet.action || '').toLowerCase();
+	var key = packet.node.key;
+	var value = packet.node.value;
 
-	if(packet.action==='DELETE'){
+	if(action==='delete'){
 		// we are only removing if we already had it
-		if(this.values[packet.key]){
-			delete(this.values[packet.key]);
-			this.emit('remove', packet.key.substr(this.path.length), packet.value);
+		if(this.values[key]){
+			delete(this.values[key]);
+			this.emit('remove', key.substr(this.path.length), value);
 		}
 	}
 	else{
 		// if we already have the value it is a change
-		if(this.values[packet.key]){
+		if(this.values[key]){
 			// we only actually changed if the value is different
-			if(this.values[packet.key]!=packet.value){
-				this.values[packet.key] = packet.value;
-				this.emit('change', packet.key.substr(this.path.length), packet.value);
+			if(this.values[key]!=value){
+				this.values[key] = value;
+				this.emit('change', key.substr(this.path.length), value);
 			}
 		}
 		else{
-			this.values[packet.key] = packet.value;
-			this.emit('add', packet.key.substr(this.path.length), packet.value);
+			this.values[key] = value;
+			this.emit('add', key.substr(this.path.length), value);
 		}
+	}
+}
+
+Location.prototype.recurse = function(node){
+	if(node.dir){
+		(node.nodes || []).forEach(this.recurse.bind(this));
+	}
+	else{
+
+		this.values[node.key] = node.value;
+		this.emit('add', node.key.substr(this.path.length), node.value);
 	}
 }
 
@@ -76,15 +90,14 @@ Location.prototype.load_path = function(path){
 
 	var self = this;
 	// load the initial items at that path
-	this.etcd.get(path, function(error, items){
-		
-		// this is most likely (there are no keys here)
+	this.etcd.ls(path, true, function(error, result){
 		if(error){
 			return;
 		}
-		(items || []).forEach(function(item){
-			self.process(item);
-		})
+
+		if(!error){
+			self.recurse(result.node);	
+		}
 	})
 }
 
@@ -93,10 +106,13 @@ Location.prototype.watch_path = function(path){
 	var self = this;
 
 	// setup a watch on the path
-	var watcher = this.etcd.watcher(path);
+	this.etcd.watch(path, true, function(error, packet){
 
-	watcher.on('change', function(packet){
-		self.process(packet);
-	})
-	
+		if(!error){
+			self.process(packet);
+		}
+
+		// control if we still keep watching
+		return !error ? true : false;
+	})	
 }

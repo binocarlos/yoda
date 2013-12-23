@@ -18,7 +18,7 @@
 
 var EventEmitter = require('events').EventEmitter;
 var util = require('util');
-var Etcd = require('node-etcd');
+var EtcdX = require('etcdx');
 var Location = require('./location');
 
 // the endpoint of the etcd server
@@ -28,7 +28,9 @@ function Yoda(host, port){
 	host = host || process.env.YODA_HOST || '127.0.0.1';
 	port = port || process.env.YODA_PORT || 4001;
 
-	this.etcd = new Etcd(host, port);
+	this.etcd = new EtcdX({
+		host:host,
+		port:port });
 }
 
 util.inherits(Yoda, EventEmitter);
