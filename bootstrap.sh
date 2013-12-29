@@ -6,4 +6,4 @@ apt-get update
 apt-get install -y git make curl software-properties-common
 
 cd ~ && test -d yoda || git clone $YODA_REPO
-cd ~/yoda && make all
+cd ~/yoda && make install
