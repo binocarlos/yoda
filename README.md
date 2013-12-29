@@ -141,7 +141,7 @@ MONGO_CONTAINER=$(docker run -p 27017 -t quarry/mongo)
 MONGO_PORT=$(docker port $MONGO_CONTAINER 27017)
 
 # now lets tell yoda about the server
-yoda add /mongo/$MONGO_CONTAINER $MONGO_IP:$MONGO_PORT
+yoda set /mongo/$MONGO_CONTAINER $MONGO_IP:$MONGO_PORT
 ```
 
 ## running examples
