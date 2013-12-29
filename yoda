@@ -5,6 +5,10 @@ export YODA_PORT=${YODA_PORT:=4001}
 case "$1" in
   get)
     YODA_PATH="$2";
+    if [[ -z $YODA_PATH ]]; then
+        echo "usage: yoda get <path>";
+        exit 1;
+    fi
     YODA_PATH=`echo $YODA_PATH | sed -r 's/^\///'`
     curl -L http://$YODA_HOST:$YODA_PORT/v2/keys/$YODA_PATH
     ;;
@@ -12,12 +16,20 @@ case "$1" in
   set)
     YODA_PATH="$2";
     YODA_DATA="$3";
+    if [[ -z $YODA_PATH || -z $YODA_DATA ]]; then
+        echo "usage: yoda set <path> <data>";
+        exit 1;
+    fi
     YODA_PATH=`echo $YODA_PATH | sed -r 's/^\///'`
     curl -L http://$YODA_HOST:$YODA_PORT/v2/keys/$YODA_PATH -d value=$YODA_DATA > /dev/null 2>&1
     ;;
 
   del)
     YODA_PATH="$2";
+    if [[ -z $YODA_PATH ]]; then
+        echo "usage: yoda del <path>";
+        exit 1;
+    fi
     YODA_PATH=`echo $YODA_PATH | sed -r 's/^\///'`
     curl -L http://$YODA_HOST:$YODA_PORT/v2/keys/$YODA_PATH -X DELETE > /dev/null 2>&1
     ;;
@@ -34,7 +46,9 @@ EOF
     ;;
 
   *)
+    echo "usage: yoda command [options]"
     yoda help
+    exit 1
     ;;
 
 esac

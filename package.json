@@ -12,9 +12,14 @@
   },
   "keywords": [
     "ZeroMQ",
+    "distributed",
+    "brokerless",
+    "mesh",
+    "scalable",
+    "horizontal",
     "etcd"
   ],
-  "author": "Kai Davenporet",
+  "author": "Kai Davenport",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/binocarlos/yoda/issues"

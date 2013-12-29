@@ -3,7 +3,7 @@ yoda
 
 ![Build status](https://api.travis-ci.org/binocarlos/yoda.png)
 
-etcd client for monitoring changes to the force
+etcd v2 client for monitoring changes to the force
 
 Useful for networks that are changing dynamically.
 
