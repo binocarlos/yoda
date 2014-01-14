@@ -5,11 +5,24 @@ var should = require('should');
 
 describe('yoda', function(){
 
+	var settings = {
+		host:process.env.ETCD_HOST || '127.0.0.1',
+		port:process.env.ETCD_PORT || 4001
+	}
+
+	function make_yoda(){
+		return new Yoda(settings.host, settings.port);
+	}
+
+	function make_etcd(){
+		return new Etcd(settings);
+	}
+
 	beforeEach(function(done){
 
 		this.timeout(1000);
 
-		var client = new Etcd();
+		var client = make_etcd();
 
 		client.rmdir('/my/location', function(error){
 			setTimeout(done, 100);
@@ -19,7 +32,7 @@ describe('yoda', function(){
 
 
 	it('should be an Event Emitter', function(done) {
-		var yoda = new Yoda();
+		var yoda = make_yoda();
 
 		yoda.on('levitate', done);
 		yoda.emit('levitate');
@@ -30,9 +43,9 @@ describe('yoda', function(){
 		this.timeout(5000);
 
 		// connect to the etcd server
-		var yoda = new Yoda();
+		var yoda = make_yoda();
 		var location = yoda.connect('/my/location');
-		var client = new Etcd();
+		var client = make_etcd();
 
 		var hits = {
 			add:0,
@@ -129,7 +142,7 @@ describe('yoda', function(){
 
 		this.timeout(5000);
 
-		var client = new Etcd();
+		var client = make_etcd();
 
 		
 		async.series([
@@ -159,7 +172,7 @@ describe('yoda', function(){
 			}
 		], function(error){
 
-			var yoda = new Yoda();
+			var yoda = make_yoda();
 			var location = yoda.connect('/my/location');
 			
 			var values = {}
