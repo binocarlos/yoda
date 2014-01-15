@@ -1,6 +1,8 @@
 yoda
 ====
 
+![Yoda](yoda.jpg)
+
 ![Build status](https://api.travis-ci.org/binocarlos/yoda.png)
 
 etcd v2 client for monitoring changes to the force - useful for networks that are changing dynamically.
