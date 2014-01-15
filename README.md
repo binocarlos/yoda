@@ -3,98 +3,14 @@ yoda
 
 ![Build status](https://api.travis-ci.org/binocarlos/yoda.png)
 
-etcd v2 client for monitoring changes to the force
-
-Useful for networks that are changing dynamically.
-
-## example
-
-A brokerless ZeroMQ REQ/REP network where multiple clients connect to multiple servers.
-
-### server.js
-
-A ZeroMQ REP server that responds with a string when it gets a request:
-
-```js
-#!/usr/bin/env node
-var zmq = require('zmq')
-  , sock = zmq.socket('rep');
-
-var port = process.argv[2] || 8791;
-sock.on('message', function(msg){
-	sock.send('hello back');
-})
-
-sock.bindSync('tcp://127.0.0.1:' + port);
-```
-
-### client.js
-
-A ZeroMQ REQ client that connects to servers registered under '/servers' with yoda:
-
-```js
-var zmq = require('zmq')
-  , server_socket = zmq.socket('req')
-  , Yoda = require('yoda');
-
-var yoda = new Yoda('127.0.0.1', 4001);
-var server_pool = yoda.connect('/servers');
-
-server_pool.on('add', function(route, endpoint){
-	server_socket.connect(endpoint);
-})
-
-setInterval(function(){
-	// this is load balanced across the server sockets
-	server_socket.send('hello!');
-}, 1000)
-```
-
-### bootstrap
-
-A command to boot 2 servers and register them under '/servers' with yoda:
-
-```
-$ node server.js 5678 &
-$ node server.js 5679 &
-$ yoda set /servers/1 tcp://127.0.0.1:5678
-$ yoda set /servers/2 tcp://127.0.0.1:5679
-```
-
-## installation
-
-### node.js
-
-The node.js part is so your app can listen to changes in the network and connect/disconnect to endpoints as they come and go.
-
-	$ npm install yoda --save
-
-### bash
-
-The bash part is so your orchestration script can write changes to the network as you are spawning/killing processes.
-
-	$ wget -qO- https://raw.github.com/binocarlos/yoda/master/bootstrap.sh | sudo bash
-
-### etcd
-
-You need an [etcd](https://github.com/coreos/etcd) server running in order for yoda to speak to the force.
-
-You can use the included Dockerfile to run this.
-
-First install [docker](https://github.com/dotcloud/docker/).
-
-Then, build the etcd docker file and run the etcd server exposing ports 4001 & 7001:
-
-```
-$ make etcd
-```
-
-## usage
+etcd v2 client for monitoring changes to the force - useful for networks that are changing dynamically.
 
 Yoda gives you 2 things:
 
  * a node.js event listener that reacts to changes in network topology (endpoints coming and going)
  * a bash script that an orchestration script calls to register and un-register endpoints
+
+## example 1 - node.js <-> Mongo
 
 ### node.js client
 
@@ -144,6 +60,86 @@ MONGO_PORT=$(docker port $MONGO_CONTAINER 27017)
 yoda set /mongo/$MONGO_CONTAINER $MONGO_IP:$MONGO_PORT
 ```
 
+### bootstrap
+
+A command to boot 2 servers and register them under '/servers' with yoda:
+
+```
+$ node server.js 5678 &
+$ node server.js 5679 &
+$ yoda set /servers/1 tcp://127.0.0.1:5678
+$ yoda set /servers/2 tcp://127.0.0.1:5679
+```
+
+## example 2 - ZeroMQ <-> ZeroMQ
+
+A brokerless ZeroMQ REQ/REP network where multiple clients connect to multiple servers - a feel-the-force mesh!
+
+### server.js
+
+```js
+#!/usr/bin/env node
+var zmq = require('zmq')
+  , sock = zmq.socket('rep');
+
+var port = process.argv[2] || 8791;
+sock.on('message', function(msg){
+	sock.send('padowan');
+})
+
+sock.bindSync('tcp://127.0.0.1:' + port);
+```
+
+### client.js
+
+A ZeroMQ REQ client that connects to servers registered under '/servers' with yoda:
+
+```js
+var zmq = require('zmq')
+  , server_socket = zmq.socket('req')
+  , Yoda = require('yoda');
+
+var yoda = new Yoda('127.0.0.1', 4001);
+var server_pool = yoda.connect('/servers');
+
+server_pool.on('add', function(route, endpoint){
+	server_socket.connect(endpoint);
+})
+
+setInterval(function(){
+	// this is load balanced across the server sockets
+	server_socket.send('jedi_skills?');
+}, 1000)
+```
+
+## installation
+
+### node.js
+
+The node.js part is so your app can listen to changes in the network and connect/disconnect to endpoints as they come and go.
+
+	$ npm install yoda --save
+
+### bash
+
+The bash part is so your orchestration script can write changes to the network as you are spawning/killing processes.
+
+	$ wget -qO- https://raw.github.com/binocarlos/yoda/master/bootstrap.sh | sudo bash
+
+### etcd
+
+You need an [etcd](https://github.com/coreos/etcd) server running in order for yoda to speak to the force.
+
+You can use the included Dockerfile to run this.
+
+First install [docker](https://github.com/dotcloud/docker/).
+
+Then, build the etcd docker file and run the etcd server exposing ports 4001 & 7001:
+
+```
+$ make etcd
+```
+
 ## running examples
 
 There is an example setup so you can see the rough idea
@@ -157,6 +153,54 @@ And then in the second shell:
 	$ ./examples/addserver.sh
 
 You should see servers arriving in the first shell.
+
+## methods
+
+``` js
+var Yoda = require('yoda');
+```
+
+### var yoda = new Yoda(etcd_host, etcd_port);
+
+Create a new yoda object connected to the given etcd_host & etcd_port.
+
+### var location = yoda.connect('/my/location');
+
+Returns a location object that will update when anything under '/my/location' changes.
+
+## events
+
+### location.on('add', function(route, data) {})
+
+Called when a new item has been added to the locations path.
+
+The route is the full key to the new item and data is the new value.
+
+### location.on('remove', function(route, data) {})
+
+Called when an item has been deleted from the locations path.
+
+### location.on('change', function(route, data) {})
+
+Called when an item has been added or removed from the locations path.
+
+## bash methods
+
+### yoda set $PATH $DATA
+
+Set the value of $PATH to $DATA.
+
+### yoda get $PATH
+
+Get the value of $PATH.
+
+### yoda del $PATH
+
+Remove $PATH.
+
+### yoda rmdir $PATH
+
+Remove $PATH and everything beneath.
 
 ## licence
 
