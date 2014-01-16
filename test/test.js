@@ -6,8 +6,8 @@ var should = require('should');
 describe('yoda', function(){
 
 	var settings = {
-		host:process.env.ETCD_HOST || '127.0.0.1',
-		port:process.env.ETCD_PORT || 4001
+		host:process.env.YODA_HOST || '127.0.0.1',
+		port:process.env.YODA_PORT || 4001
 	}
 
 	function make_yoda(){
@@ -127,9 +127,9 @@ describe('yoda', function(){
 				should.not.exist(values["/a"]);
 				values["/b"].should.equal('hello world 2');
 				values["/c"].should.equal('hello world new');
-				hits.add.should.equal(3);
+				hits.add.should.equal(4);
 				hits.change.should.equal(1);
-				hits.remove.should.equal(1);
+				hits.remove.should.equal(2);
 				done();
 			}, 10)
 			

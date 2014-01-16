@@ -64,7 +64,9 @@ Location.prototype.process = function(packet){
 		if(this.values[key]){
 			// we only actually changed if the value is different
 			if(this.values[key]!=value){
+				this.emit('remove', key.substr(this.path.length), this.values[key]);
 				this.values[key] = value;
+				this.emit('add', key.substr(this.path.length), value);
 				this.emit('change', key.substr(this.path.length), value);
 			}
 		}
