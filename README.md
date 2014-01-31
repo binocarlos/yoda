@@ -1,7 +1,7 @@
 yoda
 ====
 
-![Yoda](yoda.jpg)
+
 
 ![Build status](https://api.travis-ci.org/binocarlos/yoda.png)
 
@@ -207,3 +207,5 @@ Remove $PATH and everything beneath.
 ## licence
 
 MIT
+
+![Yoda](yoda.jpg)
