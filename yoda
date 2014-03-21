@@ -41,7 +41,7 @@ case "$1" in
         echo "usage: yoda rmdir <path>";
         exit 1;
     fi
-    curl -L -X DELETE "http://$YODA_HOST:$YODA_PORT/v2/keys/$YODA_PATH?dir=true"
+    curl -L -X DELETE "http://$YODA_HOST:$YODA_PORT/v2/keys/$YODA_PATH?recursive=true"
     ;;
 
   help)
