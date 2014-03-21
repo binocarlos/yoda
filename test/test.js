@@ -30,6 +30,12 @@ describe('yoda', function(){
 		
 	})
 
+	after(function(done){
+		client.rmdir('/my/location', function(error){
+			setTimeout(done, 100);
+		})
+	})
+
 
 	it('should be an Event Emitter', function(done) {
 		var yoda = make_yoda();
