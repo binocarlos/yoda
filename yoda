@@ -34,6 +34,16 @@ case "$1" in
     yoda get $YODA_PATH | jsonsh | grep '\[\"node\",\"value\"\]' | awk '{print $2}' | sed 's/^"//' | sed 's/"$//'
     ;;
 
+  keys)
+    YODA_PATH="$2";
+    if [[ -z $YODA_PATH ]]; then
+        echo "usage: yoda value <path>";
+        exit 1;
+    fi
+    YODA_PATH=`echo $YODA_PATH | sed -r 's/^\///'`
+    curl -s -L http://$YODA_HOST:$YODA_PORT/v2/keys/$YODA_PATH?recursive=true | jsonsh | grep '\"key\"\]' | awk '{print $2}' | sed 's/^"//' | sed 's/"$//'
+    ;;
+
   del)
     YODA_PATH="$2";
     if [[ -z $YODA_PATH ]]; then
