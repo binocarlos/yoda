@@ -1,8 +1,6 @@
 yoda
 ====
 
-
-
 ![Build status](https://api.travis-ci.org/binocarlos/yoda.png)
 
 etcd v2 client for monitoring changes to the force - useful for networks that are changing dynamically.
@@ -11,6 +9,8 @@ Yoda gives you 2 things:
 
  * a node.js event listener that reacts to changes in network topology (endpoints coming and going)
  * a bash script that an orchestration script calls to register and un-register endpoints
+
+![Yoda](yoda.jpg)
 
 ## example 1 - node.js <-> Mongo
 
@@ -128,15 +128,20 @@ The bash part is so your orchestration script can write changes to the network a
 
 	$ wget -qO- https://raw.github.com/binocarlos/yoda/master/bootstrap.sh | sudo bash
 
-### etcd
+### etcd server
 
 You need an [etcd](https://github.com/coreos/etcd) server running in order for yoda to speak to the force.
 
-You can use the included Dockerfile to run this.
+2 environment variables are used by yoda to speak to the etcd server:
+
+ * YODA_HOST (default 127.0.0.1)
+ * YODA_PORT (default 4001)
+
+You can use the Makefile to run an etcd server in a docker container.
 
 First install [docker](https://github.com/dotcloud/docker/).
 
-Then, build the etcd docker file and run the etcd server exposing ports 4001 & 7001:
+Then, to run etcd on the default port:
 
 ```
 $ make etcd
@@ -194,6 +199,10 @@ Set the value of $PATH to $DATA.
 
 ### yoda get $PATH
 
+Get the JSON packet of $PATH.
+
+### yoda value $PATH
+
 Get the value of $PATH.
 
 ### yoda del $PATH
@@ -207,5 +216,3 @@ Remove $PATH and everything beneath.
 ## licence
 
 MIT
-
-![Yoda](yoda.jpg)

@@ -1,3 +1,5 @@
+JSON_SH_URL ?= https://raw.github.com/dominictarr/JSON.sh/master/JSON.sh
+
 check: test
 
 test:
@@ -8,11 +10,14 @@ test:
 		--growl \
 		test/test.js
 
-install:
+install: jsonsh
 	cp -f yoda /usr/local/bin/yoda
 
-etcd:
-	docker build -t yoda/etcd .
-	docker run -d -p 4001:4001 -p 7001:7001 -name yoda-etcd1 -t yoda/etcd
+jsonsh:
+	wget -qO- ${JSON_SH_URL} > /usr/local/bin/jsonsh
+	chmod a+x /usr/local/bin/jsonsh
 
-.PHONY: test
+etcd:
+	docker run -d -p 4001:4001 -p 7001:7001 -name yoda-etcd1 -t coreos/etcd
+
+.PHONY: test check install jsonsh etcd

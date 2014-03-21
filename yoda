@@ -22,7 +22,16 @@ case "$1" in
         exit 1;
     fi
     YODA_PATH=`echo $YODA_PATH | sed -r 's/^\///'`
-    curl -L http://$YODA_HOST:$YODA_PORT/v2/keys/$YODA_PATH
+    curl -s -L http://$YODA_HOST:$YODA_PORT/v2/keys/$YODA_PATH
+    ;;
+
+  value)
+    YODA_PATH="$2";
+    if [[ -z $YODA_PATH ]]; then
+        echo "usage: yoda value <path>";
+        exit 1;
+    fi
+    yoda get $YODA_PATH | jsonsh | grep '\[\"node\",\"value\"\]' | awk '{print $2}' | sed 's/^"//' | sed 's/"$//'
     ;;
 
   del)
@@ -47,9 +56,11 @@ case "$1" in
   help)
     cat<<EOF
 
+    get <path>            Read the JSON packet of path
     get <path>            Read the value of path
     set <path> <data>     Write the value of path
     del <path>            Remove path
+    rmdir <path>          Remove directory recursively
     help                  Print the list of commands
 
 EOF
