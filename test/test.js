@@ -31,6 +31,8 @@ describe('yoda', function(){
 	})
 
 	after(function(done){
+
+		var client = make_etcd();
 		client.rmdir('/my/location', function(error){
 			setTimeout(done, 100);
 		})
