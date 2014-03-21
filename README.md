@@ -205,6 +205,10 @@ Get the JSON packet of $PATH.
 
 Get the value of $PATH.
 
+### yoda keys $PATH
+
+Print all keys beneath $PATH one per line
+
 ### yoda del $PATH
 
 Remove $PATH.

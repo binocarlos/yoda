@@ -67,7 +67,8 @@ case "$1" in
     cat<<EOF
 
     get <path>            Read the JSON packet of path
-    get <path>            Read the value of path
+    value <path>          Read the value of path
+    keys <path>           List all keys below path one per line
     set <path> <data>     Write the value of path
     del <path>            Remove path
     rmdir <path>          Remove directory recursively
