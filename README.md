@@ -10,8 +10,6 @@ Yoda gives you 2 things:
  * a node.js event listener that reacts to changes in network topology (endpoints coming and going)
  * a bash script that an orchestration script calls to register and un-register endpoints
 
-![Yoda](yoda.jpg)
-
 ## example 1 - node.js <-> Mongo
 
 ### node.js client
