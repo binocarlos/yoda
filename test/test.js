@@ -1,5 +1,5 @@
 var Yoda = require('../src');
-var Etcd = require('etcdx');
+var Etcd = require('etcdjs');
 var async = require('async');
 var should = require('should');
 
@@ -15,7 +15,7 @@ describe('yoda', function(){
 	}
 
 	function make_etcd(){
-		return new Etcd(settings);
+		return Etcd(settings.host + ':' + settings.port);
 	}
 
 	beforeEach(function(done){
@@ -24,7 +24,9 @@ describe('yoda', function(){
 
 		var client = make_etcd();
 
-		client.rmdir('/my/location', function(error){
+		client.del('/my/location', {
+			recursive:true
+		}, function(error){
 			setTimeout(done, 100);
 		})
 		
@@ -33,7 +35,9 @@ describe('yoda', function(){
 	after(function(done){
 
 		var client = make_etcd();
-		client.rmdir('/my/location', function(error){
+		client.del('/my/location', {
+			recursive:true
+		}, function(error){
 			setTimeout(done, 100);
 		})
 	})

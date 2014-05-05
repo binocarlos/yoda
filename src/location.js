@@ -33,12 +33,6 @@ Location.prototype.process = function(packet){
 	var key = packet.node.key
 	var value = packet.node.value
 
-	console.log('-------------------------------------------');
-	console.log('-------------------------------------------');
-	console.log('-------------------------------------------');
-	console.dir(packet)
-	process.exit()
-
 	if(action==='delete'){
 		// we are only removing if we already had it
 		if(this.values[key]){
@@ -71,14 +65,14 @@ Location.prototype.load_path = function(path){
 	this.etcd.get(path, {
 		recursive:true
 	}, function(error, result){
-		if(error){
+		if(error || !result){
 			return
 		}
 		else{
 			var leafs = flatten(result.node)
 			Object.keys(leafs || {}).forEach(function(key){
 				var path = key.substr(self.path.length)
-				var value = leafs[path]
+				var value = leafs[key]
 				self.emit('add', path, value)
 			})
 		}
@@ -93,7 +87,7 @@ Location.prototype.watch_path = function(path){
 	this.etcd.wait(path, {
 		recursive:true
 	}, function onResult(error, data, next){
-		if(err){
+		if(error){
 			return next(onResult)
 		}
 		if(!data){
