@@ -25,7 +25,7 @@
     "url": "https://github.com/binocarlos/yoda/issues"
   },
   "dependencies": {
-    "etcdx": "~0.0.1"
+    "etcdjs": "^1.1.1"
   },
   "devDependencies": {
     "async": "~0.2.9",
