@@ -1,8 +1,6 @@
 yoda
 ====
 
-[![Travis](http://img.shields.io/travis/binocarlos/yoda.svg?style=flat)](https://travis-ci.org/binocarlos/yoda)
-
 ![yoda gif](http://media.giphy.com/media/UsmcxQeK7BRBK/giphy.gif "yoda gif")
 
 etcd v2 client for monitoring changes to the force - useful for networks that are changing dynamically.
